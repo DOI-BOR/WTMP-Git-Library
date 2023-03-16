@@ -1,0 +1,8 @@
+<WTMPGitConfig>
+    <UseSChannel>true</UseSChannel>
+    <GitlabConfiguration>
+        <URL>https://www.example.com</URL>
+        <ApplicationKey>TestApplicationKey</ApplicationKey>
+        <ApplicationSecret>TestApplicationSecret</ApplicationSecret>
+    </GitlabConfiguration>
+</WTMPGitConfig>
