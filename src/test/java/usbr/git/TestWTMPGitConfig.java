@@ -8,6 +8,7 @@
 
 package usbr.git;
 
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.junit.jupiter.api.Test;
 import usbr.git.cli.GitProperty;
@@ -16,20 +17,19 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestWTMPGitConfig {
 
     @Test
-    public void testReadXMLConfig() throws IOException, JDOMException {
+    public void testReadXMLConfig() throws IOException, JDOMException, XMLParseException {
         URL xml = getClass().getResource("testConfig.xml");
 
         GitlabConfigurator.prepareFromConfigurationFile(xml);
     }
 
     @Test
-    public void testSChannelReadsSuccessfully() throws IOException, JDOMException {
+    public void testSChannelReadsSuccessfully() throws IOException, JDOMException, XMLParseException {
         URL xml = getClass().getResource("testConfig.xml");
 
         GitlabConfigurator configurator = GitlabConfigurator.prepareFromConfigurationFile(xml);
@@ -37,7 +37,7 @@ public class TestWTMPGitConfig {
     }
 
     @Test
-    public void testGitlabConfigReadsSuccessfully() throws IOException, JDOMException {
+    public void testGitlabConfigReadsSuccessfully() throws IOException, JDOMException, XMLParseException {
         URL xml = getClass().getResource("testConfig.xml");
 
         GitlabConfigurator configurator = GitlabConfigurator.prepareFromConfigurationFile(xml);
@@ -51,7 +51,7 @@ public class TestWTMPGitConfig {
     }
 
     @Test
-    public void testGitlabConfigHasCorrectApplicationProperty() throws IOException, JDOMException {
+    public void testGitlabConfigHasCorrectApplicationProperty() throws IOException, JDOMException, XMLParseException {
         URL xml = getClass().getResource("testConfig.xml");
 
         GitlabConfigurator configurator = GitlabConfigurator.prepareFromConfigurationFile(xml);
@@ -62,6 +62,21 @@ public class TestWTMPGitConfig {
         GitProperty clientIdProperty = configuration.getClientIdProperty();
         assertEquals("credential.https://www.example.com.gitLabDevClientId", clientIdProperty.getKey());
         assertEquals("TestApplicationKey", clientIdProperty.getValue());
+    }
+
+    @Test
+    public void testGitlabConfigThrowsExceptionBadRootElement() {
+        URL xml = getClass().getResource("testInvalidConfig.xml");
+
+        XMLParseException exception = assertThrows(XMLParseException.class, () -> GitlabConfigurator.prepareFromConfigurationFile(xml));
+        assertEquals("Invalid root element! Provided name: WrongElementName expected: WTMPGitConfig", exception.getMessage());
+    }
+
+    @Test
+    public void testInvalidConfigThrowsExceptionBadGitlabElementName() {
+        Element element = new Element("IncorrectName");
+        XMLParseException exception = assertThrows(XMLParseException.class, () -> GitlabConfiguration.fromXML(element));
+        assertEquals("Invalid root element! Provided name: IncorrectName expected: GitlabConfiguration", exception.getMessage());
     }
 
 }

@@ -8,6 +8,7 @@
 
 package usbr.git;
 
+import com.google.common.flogger.FluentLogger;
 import org.jdom.Element;
 import usbr.git.cli.GitProperty;
 
@@ -89,9 +90,9 @@ public class GitlabConfiguration {
         return new GitProperty(propertyName, propertyValue);
     }
 
-    public static GitlabConfiguration fromXML(Element element) {
+    public static GitlabConfiguration fromXML(Element element) throws XMLParseException {
         if(!ROOT_ELEMENT_NAME.equals(element.getName())) {
-            return null;
+            throw new XMLParseException("Invalid root element! Provided name: " + element.getName() + " expected: " + ROOT_ELEMENT_NAME);
         }
         GitlabConfiguration configuration = new GitlabConfiguration();
         Element urlElement = element.getChild(URL_ELEMENT_NAME);
@@ -99,7 +100,7 @@ public class GitlabConfiguration {
             try {
                 configuration.setUrl(new URL(urlElement.getText()));
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                throw new XMLParseException(e);
             }
         }
 

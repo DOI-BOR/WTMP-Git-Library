@@ -76,13 +76,9 @@ public class GitlabConfigurator {
         return _configuration;
     }
 
-    public static GitlabConfigurator prepareFromConfigurationFile(URL configurationFile) throws IOException, JDOMException {
+    public static GitlabConfigurator prepareFromConfigurationFile(URL configurationFile) throws IOException, JDOMException, XMLParseException {
         Document document = new SAXBuilder().build(configurationFile);
         WTMPGitConfig wtmpGitConfig = WTMPGitConfig.fromXML(document.getRootElement());
-        if (wtmpGitConfig != null) {
-            return new GitlabConfigurator(wtmpGitConfig);
-        } else {
-            return null;
-        }
+        return new GitlabConfigurator(wtmpGitConfig);
     }
 }

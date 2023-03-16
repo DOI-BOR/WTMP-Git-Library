@@ -60,9 +60,9 @@ public class WTMPGitConfig {
         return new GitProperty(key, val);
     }
 
-    public static WTMPGitConfig fromXML(Element rootElement) {
+    public static WTMPGitConfig fromXML(Element rootElement) throws XMLParseException {
         if (!ROOT_ELEMENT_NAME.equals(rootElement.getName())) {
-            return null;
+            throw new XMLParseException("Invalid root element! Provided name: " + rootElement.getName() + " expected: " + ROOT_ELEMENT_NAME);
         }
 
         WTMPGitConfig config = new WTMPGitConfig();
